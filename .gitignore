@@ -4,8 +4,8 @@
 
 ##-------------------------------
 
-#*.ps1
-#*.bat
+*.ps1
+*.bat
 
 ## can exclude some sttings files
 
