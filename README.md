@@ -12,9 +12,10 @@ ofxSimpleSlider
 ![image](/docs/Capture.PNG?raw=true "image")
 
 ## Features
-- vertical and horizontal.
-- autodraw or not.
-- custom size.
+- Only float type.
+- Custom size.
+- Vertical and horizontal.
+- Autodraw or not.
 
 ## Usage
 Look example.
