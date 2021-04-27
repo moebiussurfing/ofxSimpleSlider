@@ -183,8 +183,10 @@ void ofxSimpleSlider::drawSlider() {
 				if (bVertical)
 				{
 					if (!bLabelsAlignBottom) {//right
-						x = width + 5;
+						x = width + 2;
 						y = height;
+
+						if (bLabel) y -= 16;
 					}
 					else//bottom
 					{
