@@ -15,8 +15,8 @@ public:
 	ofxSimpleSlider();
 	~ofxSimpleSlider();
 
-	//NOTE: call setPosition(..) before setup(..)
-	//NOTE: if not you must call setup(..) again after setPosition(..)!
+	// NOTE: call setPosition(..) before setup(..)
+	// NOTE: if not you must call setup(..) again after setPosition(..)!
 	//--------------------------------------------------------------
 	void setPosition(float inx, float iny, float inw, float inh) {
 		x = inx;
@@ -26,10 +26,12 @@ public:
 		box.set(x, y, width, height);
 	}
 
-	//float ofParameter
+	// ofParameter<float> type
 	void setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw);
-
+	
+	// float type
 	void setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialPercent, bool bVert, bool bDrawNum, bool _bAutodraw);
+	
 	void clear();
 
 	void drawSlider();
@@ -53,10 +55,9 @@ public:
 
 	void setVisible(bool b);
 
-	ofParameter<float> valueParam = NULL;
 protected:
-	//ofEventListener listener;
-	void Changed(float &v);
+	ofParameter<float> valueParam = NULL;
+	ofEventListener listener;
 
 protected:
 	bool isEnabled = true;
@@ -69,8 +70,8 @@ public:
 		bLabelsAlignBottom = b;
 	}
 
-	//a simple callback
 public:
+	// a simple callback
 	//----------------------------------------------------
 	bool isChanged() {//to be called on every frame
 		bool b;
@@ -84,6 +85,7 @@ public:
 		}
 		return b;
 	}
+
 protected:
 	bool bChanged = false;
 

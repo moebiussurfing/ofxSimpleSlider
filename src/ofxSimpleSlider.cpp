@@ -10,7 +10,7 @@
  //----------------------------------------------------
 ofxSimpleSlider::ofxSimpleSlider() {
 	ofLogNotice(__FUNCTION__);
-	
+
 	bWasSetup = false;
 
 	labelString = "";
@@ -19,7 +19,7 @@ ofxSimpleSlider::ofxSimpleSlider() {
 //----------------------------------------------------
 ofxSimpleSlider::~ofxSimpleSlider() {
 	ofLogNotice(__FUNCTION__);
-	
+
 	clear();
 }
 
@@ -27,43 +27,21 @@ ofxSimpleSlider::~ofxSimpleSlider() {
 void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw) {
 	ofLogNotice(__FUNCTION__);
 
-	//if (parameter == NULL) {
-	//	ofLogError(__FUNCTION__) << "Parameter is NULL!";
-	//	return;
-	//}
-
 	valueParam.makeReferenceTo(parameter);
-
 	setup(inx, iny, inw, inh, parameter.getMin(), parameter.getMax(), parameter.getMin(), bVert, bDrawNum, _bAutodraw);
 
 	// callback
-
-	valueParam.addListener(this, &ofxSimpleSlider::Changed);
-
-	//listener = valueParam.newListener([this](float &v) {
-	//	ofLogNotice("ofxSimpleSlider::Changed") << v;
-	//	float _prc = ofMap(v, lowValue, highValue, 0, 1);
-	//	//float _prc = ofMap(v, valueParam.getMin(), valueParam.getMax(), 0, 1);
-	//	setPercent(_prc);
-	//	//bChanged = true;
-	//});
-}
-
-//--------------------------------------------------------------
-void ofxSimpleSlider::Changed(float &v) {
-	ofLogNotice(__FUNCTION__) << v;
-
-	//float _prc = ofMap(v, lowValue, highValue, 0, 1);
-	float _prc = ofMap(v, valueParam.getMin(), valueParam.getMax(), 0.0f, 1.0f, true);
-	setPercent(_prc);
-
-	bChanged = true;
+	listener = valueParam.newListener([this](float &v) {
+		ofLogNotice("ofxSimpleSlider::Changed") /*<< valueParam.getName() << ":"*/ << v;
+		float _prc = ofMap(v, lowValue, highValue, 0, 1, true);
+		setPercent(_prc);
+	});
 }
 
 //-----------------------------------------------------------------------------------------------------------------------
 void ofxSimpleSlider::setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialValue, bool bVert, bool bDrawNum, bool _bAutodraw) {
 	ofLogNotice(__FUNCTION__);
-	
+
 	bWasSetup = false;
 	bAutodraw = _bAutodraw;
 	clear();
@@ -112,8 +90,8 @@ void ofxSimpleSlider::clear() {
 
 //----------------------------------------------------
 void ofxSimpleSlider::setLabelString(string str) {
-	ofLogNotice(__FUNCTION__)<<str;
-	
+	ofLogNotice(__FUNCTION__) << str;
+
 	labelString = str;
 
 	bLabel = true;
@@ -244,7 +222,7 @@ void ofxSimpleSlider::drawSlider() {
 
 //----------------------------------------------------
 float ofxSimpleSlider::getValue() {
-	// THIS IS THE MAIN WAY YOU GET THE VALUE FROM THE SLIDER!
+	// this is the main way you get the value from the slider
 	float out = ofMap(percent, 0, 1, lowValue, highValue, true);
 	return out;
 }
@@ -282,8 +260,10 @@ void ofxSimpleSlider::setNumberDisplayPrecision(int prec) {
 
 //----------------------------------------------------
 void ofxSimpleSlider::mouseMoved(ofMouseEventArgs& event) {
-	if (isEnabled)
+
+	if (isEnabled) {
 		bHasFocus = false;
+	}
 }
 void ofxSimpleSlider::mouseDragged(ofMouseEventArgs& event) {
 	if (isEnabled) {
@@ -319,14 +299,12 @@ void ofxSimpleSlider::updatePercentFromMouse(int mx, int my) {
 		if (bVertical) {
 			percent = ofMap(my, y, y + height, 1, 0, true);
 
-			if (valueParam != NULL) valueParam = ofMap(my, y, y + height, valueParam.getMax(), valueParam.getMin(), true);
-			//else ofLogError(__FUNCTION__) << "Parameter is NULL!";
+			valueParam = ofMap(my, y, y + height, valueParam.getMax(), valueParam.getMin(), true);
 		}
 		else {
 			percent = ofMap(mx, x, x + width, 0, 1, true);
 
-			if (valueParam != NULL) valueParam = ofMap(my, x, x + width, valueParam.getMin(), valueParam.getMax(), true);
-			//else ofLogError(__FUNCTION__) << "Parameter is NULL!";
+			valueParam = ofMap(my, x, x + width, valueParam.getMin(), valueParam.getMax(), true);
 		}
 
 		bChanged = true;
