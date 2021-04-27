@@ -5,10 +5,6 @@
  *  Updated by moebiusSurfing 2021.
  */
 
-//TODO:
-// + params
-// + add setter, not setup
-
 #pragma once
 
 #include "ofMain.h"
@@ -16,10 +12,12 @@
 class ofxSimpleSlider {
 
 public:
+	ofxSimpleSlider();
+	~ofxSimpleSlider();
 
-    ofxSimpleSlider();
-    ~ofxSimpleSlider();
-
+	//NOTE: call setPosition(..) before setup(..)
+	//NOTE: if not you must call setup(..) again after setPosition(..)!
+	//--------------------------------------------------------------
 	void setPosition(float inx, float iny, float inw, float inh) {
 		x = inx;
 		y = iny;
@@ -28,59 +26,85 @@ public:
 		box.set(x, y, width, height);
 	}
 
-    void setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialPercent, bool bVert, bool bDrawNum, bool _bAutodraw);
-    void clear();
-
-    void drawSlider();
-    void draw(ofEventArgs& event);
-    void mouseMoved(ofMouseEventArgs& event);
-    void mouseDragged(ofMouseEventArgs& event);
-    void mousePressed(ofMouseEventArgs& event);
-    void mouseReleased(ofMouseEventArgs& event);
-
-    float getValue();
-    float getLowValue();
-    float getHighValue();
-    float getPercent();
-
-    void setLowValue(float lv);
-    void setHighValue(float hv);
-    void setPercent(float p);
-    void setNumberDisplayPrecision(int prec);
-    void setLabelString (string str);
-    void updatePercentFromMouse(int mx, int my);
-
-    bool isEnabled = true;
-    void setVisible(bool b);
-
 	//float ofParameter
+	void setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw);
+
+	void setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialPercent, bool bVert, bool bDrawNum, bool _bAutodraw);
+	void clear();
+
+	void drawSlider();
+	void draw(ofEventArgs& event);
+	void mouseMoved(ofMouseEventArgs& event);
+	void mouseDragged(ofMouseEventArgs& event);
+	void mousePressed(ofMouseEventArgs& event);
+	void mouseReleased(ofMouseEventArgs& event);
+
+	float getValue();
+	float getLowValue();
+	float getHighValue();
+	float getPercent();
+
+	void setLowValue(float lv);
+	void setHighValue(float hv);
+	void setPercent(float p);
+	void setNumberDisplayPrecision(int prec);
+	void setLabelString(std::string str);
+	void updatePercentFromMouse(int mx, int my);
+
+	void setVisible(bool b);
+
 	ofParameter<float> valueParam = NULL;
-    void setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw);
-	ofEventListener listener;
+protected:
+	//ofEventListener listener;
+	void Changed(float &v);
 
 protected:
+	bool isEnabled = true;
 	bool bAutodraw = true;
-	bool bLabelsAlign = false;
+	bool bLabelsAlignBottom = false;
 
-    float x;
-    float y;
-    float width;
-    float height;
-    ofRectangle box;
-    int numberDisplayPrecision;
+public:
+	//----------------------------------------------------
+	void setLabeAlignBottom(bool b) {
+		bLabelsAlignBottom = b;
+	}
 
-    bool bVertical;
-    bool bDrawNumber;
-    bool bHasFocus;
+	//a simple callback
+public:
+	//----------------------------------------------------
+	bool isChanged() {//to be called on every frame
+		bool b;
+		if (bChanged) {
+			bChanged = false;
+			b = true;
+		}
+		else
+		{
+			b = false;
+		}
+		return b;
+	}
+protected:
+	bool bChanged = false;
 
-    float lowValue;
-    float highValue;
-    float percent;
+	float x;
+	float y;
+	float width;
+	float height;
+	ofRectangle box;
+	int numberDisplayPrecision;
 
-    string labelString;
+	bool bVertical;
+	bool bDrawNumber;
+	bool bHasFocus;
+
+	float lowValue;
+	float highValue;
+	float percent;
+
+	std::string labelString;
 	bool bLabel = false;
 
-private:
-
-    bool bWasSetup;
+protected:
+	bool bWasSetup;
 };

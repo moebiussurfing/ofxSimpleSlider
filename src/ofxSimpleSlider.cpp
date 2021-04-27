@@ -2,12 +2,15 @@
  *  ofxSimpleSlider.cpp
  *  Created by Golan Levin on 2/24/12.
  *  Updated by Dan Wilcox 2012.
+ *  Updated by moebiusSurfing 2021.
  */
 
 #include "ofxSimpleSlider.h"
 
  //----------------------------------------------------
 ofxSimpleSlider::ofxSimpleSlider() {
+	ofLogNotice(__FUNCTION__);
+	
 	bWasSetup = false;
 
 	labelString = "";
@@ -15,27 +18,52 @@ ofxSimpleSlider::ofxSimpleSlider() {
 
 //----------------------------------------------------
 ofxSimpleSlider::~ofxSimpleSlider() {
+	ofLogNotice(__FUNCTION__);
+	
 	clear();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------
 void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw) {
+	ofLogNotice(__FUNCTION__);
 
-	if (parameter == NULL) return;
+	//if (parameter == NULL) {
+	//	ofLogError(__FUNCTION__) << "Parameter is NULL!";
+	//	return;
+	//}
 
 	valueParam.makeReferenceTo(parameter);
 
 	setup(inx, iny, inw, inh, parameter.getMin(), parameter.getMax(), parameter.getMin(), bVert, bDrawNum, _bAutodraw);
 
-	listener = valueParam.newListener([this](float &v) {
-		ofLogNotice("ofxSimpleSlider Changed parameter") << v;
+	// callback
 
-		percent = ofMap(v, valueParam.getMin(), valueParam.getMax(), 0, 1, true);
-	});
+	valueParam.addListener(this, &ofxSimpleSlider::Changed);
+
+	//listener = valueParam.newListener([this](float &v) {
+	//	ofLogNotice("ofxSimpleSlider::Changed") << v;
+	//	float _prc = ofMap(v, lowValue, highValue, 0, 1);
+	//	//float _prc = ofMap(v, valueParam.getMin(), valueParam.getMax(), 0, 1);
+	//	setPercent(_prc);
+	//	//bChanged = true;
+	//});
+}
+
+//--------------------------------------------------------------
+void ofxSimpleSlider::Changed(float &v) {
+	ofLogNotice(__FUNCTION__) << v;
+
+	//float _prc = ofMap(v, lowValue, highValue, 0, 1);
+	float _prc = ofMap(v, valueParam.getMin(), valueParam.getMax(), 0.0f, 1.0f, true);
+	setPercent(_prc);
+
+	bChanged = true;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------
 void ofxSimpleSlider::setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialValue, bool bVert, bool bDrawNum, bool _bAutodraw) {
+	ofLogNotice(__FUNCTION__);
+	
 	bWasSetup = false;
 	bAutodraw = _bAutodraw;
 	clear();
@@ -70,6 +98,8 @@ void ofxSimpleSlider::setup(float inx, float iny, float inw, float inh, float lo
 
 //----------------------------------------------------
 void ofxSimpleSlider::clear() {
+	ofLogNotice(__FUNCTION__);
+
 	if (bWasSetup) {
 		ofRemoveListener(ofEvents().draw, this, &ofxSimpleSlider::draw);
 		ofRemoveListener(ofEvents().mouseMoved, this, &ofxSimpleSlider::mouseMoved);
@@ -82,6 +112,8 @@ void ofxSimpleSlider::clear() {
 
 //----------------------------------------------------
 void ofxSimpleSlider::setLabelString(string str) {
+	ofLogNotice(__FUNCTION__)<<str;
+	
 	labelString = str;
 
 	bLabel = true;
@@ -113,14 +145,12 @@ void ofxSimpleSlider::drawSlider() {
 		ofNoFill();
 		ofSetLineWidth(1.0);
 		ofSetColor(200, 200, 200, sliderAlpha);
-		//ofSetColor(200, 200, 200);
 		ofSetRectMode(OF_RECTMODE_CORNER);
 		ofDrawRectangle(0, 0, width, height);
 
 		// draw spine
 		ofSetLineWidth(1.0);
 		ofSetColor(255, 255, 255, spineAlpha);
-		//ofSetColor(255, 255, 255);
 		if (bVertical) {
 			ofDrawLine(width / 2, 0, width / 2, height);
 		}
@@ -131,7 +161,6 @@ void ofxSimpleSlider::drawSlider() {
 		// draw thumb
 		ofSetLineWidth(5.0);
 		ofSetColor(255, 255, 255, thumbAlpha);
-		//ofSetColor(255, 255, 255);
 		if (bVertical) {
 			float thumbY = ofMap(percent, 0, 1, height, 0, true);
 			ofDrawLine(0, thumbY, width, thumbY);
@@ -141,6 +170,7 @@ void ofxSimpleSlider::drawSlider() {
 			ofDrawLine(thumbX, 0, thumbX, height);
 		}
 
+		//TODO:
 		////move label up left
 		//ofTranslate(-77, -7);
 		////move label down left
@@ -168,28 +198,34 @@ void ofxSimpleSlider::drawSlider() {
 			// draw numeric value
 			if (bDrawNumber)
 			{
-				int _pw = 15;
-				int _ph = 15;
+				int _pw = 4;//TODO: get text width
+				int _ph = 15;//font height
 				int x, y;
-				//bLabelsAlign = true;
+
 				if (bVertical)
 				{
-					if (!bLabelsAlign) {
+					if (!bLabelsAlignBottom) {//right
 						x = width + 5;
 						y = height;
 					}
-					else
+					else//bottom
 					{
-						x = width / 2 - _pw;
-						y = height + _ph;
+						x = -5;
+						y = height + _ph + 10;
 					}
 
+					//label
+					if (bLabel)
+					{
+						ofDrawBitmapString(labelString, x, y);
+						y += _ph;
+					}
+					//number
 					ofDrawBitmapString(ofToString(getValue(), numberDisplayPrecision), x, y);
-					if (bLabel) ofDrawBitmapString(labelString, x, y - _ph);
 				}
 				else
 				{
-					if (!bLabelsAlign) {
+					if (!bLabelsAlignBottom) {
 						x = width + 5;
 						y = height / 2 + 4;
 					}
@@ -201,7 +237,6 @@ void ofxSimpleSlider::drawSlider() {
 
 		}
 		ofPopMatrix();
-		ofSetLineWidth(1.0);
 
 		ofPopStyle();
 	}
@@ -213,7 +248,6 @@ float ofxSimpleSlider::getValue() {
 	float out = ofMap(percent, 0, 1, lowValue, highValue, true);
 	return out;
 }
-
 
 //----------------------------------------------------
 // Probably not used very much. 
@@ -239,6 +273,8 @@ void ofxSimpleSlider::setPercent(float p) {
 	// Set the slider's percentage from the outside. 
 	p = ofClamp(p, 0, 1);
 	percent = p;
+
+	bChanged = true;
 }
 void ofxSimpleSlider::setNumberDisplayPrecision(int prec) {
 	numberDisplayPrecision = prec;
@@ -282,14 +318,18 @@ void ofxSimpleSlider::updatePercentFromMouse(int mx, int my) {
 		// Given the mouse value, compute the percentage.
 		if (bVertical) {
 			percent = ofMap(my, y, y + height, 1, 0, true);
-			
+
 			if (valueParam != NULL) valueParam = ofMap(my, y, y + height, valueParam.getMax(), valueParam.getMin(), true);
+			//else ofLogError(__FUNCTION__) << "Parameter is NULL!";
 		}
 		else {
 			percent = ofMap(mx, x, x + width, 0, 1, true);
-			
+
 			if (valueParam != NULL) valueParam = ofMap(my, x, x + width, valueParam.getMin(), valueParam.getMax(), true);
+			//else ofLogError(__FUNCTION__) << "Parameter is NULL!";
 		}
+
+		bChanged = true;
 	}
 }
 

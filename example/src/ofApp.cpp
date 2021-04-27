@@ -33,7 +33,7 @@ void ofApp::setup() {
 	slider1.setup(100, 50, small, big, 0, 1, 0.5, true, true, true);//vertical
 	slider2.setup(100 + small + 10, 50, big, small, 0, 1, 0.5, false, true, true);//horizontal
 	slider3.setupParam(value3, 600, 50, small, big, true, true, true);//vertical
-	slider4.setupParam(value4, 610 + small, 50, small, big, true, true, false);//vertical. manual autodraw
+	slider4.setupParam(value4, 610 + small, 50, small, big, true, true, false);// 1: vertical. 2: draw number label. 3: manual draw. disabled autodraw
 }
 
 //--------------------------------------------------------------
@@ -56,7 +56,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	if (!bDrawManually) slider4.drawSlider();
+	if (!bDrawManually) slider4.drawSlider();//must draw manually bc is initiated with last bool disabled
 
 	string ss;
 	ss += "a: animator " + ofToString(bAnim ? "[x]" : "[ ]") + "\n";
