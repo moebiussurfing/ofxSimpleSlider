@@ -31,18 +31,39 @@ void ofApp::setup() {
 	float w = 200;
 	float h = 50;
 
+	//-
+	
+	//slider1
 	slider1.setup(50, 50, h, w, 0, 1, 0.5, true, true, true);//vertical
 
+	//-
+	
+	//slider2
 	slider2.setup(50 + h + 10, 50, w, h, 0, 1, 0.5, false, true, true);//horizontal
 	slider2.setLabelString("myFloat2");
 
+	//-
+	
+	//slider3
 	slider3.setupParam(value3, 0, 0, 0, 0, true, true, true);//vertical
 	slider3.setLabeAlignBottom(true);
 	slider3.setLabelString(value3.getName());
 
-	slider4.setupParam(value4, 0, 0, 0, 0, true, true, false);// 1: vertical. 2: draw number label. 3: manual draw. disabled autodraw
+	//-
+
+	//slider4
+	slider4.setupParam(value4, 500, 100, 400, 70, false, false, false);
+	slider4.setNumberDisplay(true);
 	slider4.setLabelString(value4.getName());
-	//slider4.setLabeAlignBottom(true);
+	slider4.setLabeAlignBottom(true);
+
+	//decoration
+	slider4.setWidthThumbPick(5);
+	slider4.setColorThumb(ofColor::blue);
+	slider4.setColorSpine(ofColor::black);
+	slider4.setColorGlobal(ofColor::yellow);
+	slider4.setAlphaThumbPower(1);
+	slider4.setAlphaGlobalPower(1);//zero to hide
 }
 
 //--------------------------------------------------------------
@@ -68,17 +89,19 @@ void ofApp::draw() {
 
 	// help info
 	string ss;
-	ss += "a : Animator " + ofToString(bAnim ? "[x]" : "[ ]") + "\n";
-	ss += "1 : Slider1 > Set visible " + ofToString(b1visible ? "[x]" : "[ ]") + "\n";
-	ss += "4 : Slider4 > AutoDraw disabled. Manual draw " + ofToString(bDrawManually ? "[x]" : "[ ]");
-	ofDrawBitmapStringHighlight(ss, 15, ofGetHeight() - 15 * 4);
+	ss += "a         : Animator " + ofToString(bAnim ? "[x]" : "[ ]") + "\n";
+	ss += "1         : Slider1 | Set visible " + ofToString(b1visible ? "[x]" : "[ ]") + "\n";
+	ss += "BACKSPACE : Slider1 | Randomize layout. \n";
+	ss += "4         : Slider4 | AutoDraw disabled. Manual draw " + ofToString(bDrawManually ? "[x]" : "[ ]") + "\n";
+	ss += "RETURN    : Slider4 | Randomize layout. \n";
+	ofDrawBitmapStringHighlight(ss, 15, ofGetHeight() - 15 * 6);
 
 	// responsive layout
 	float pad = 20;
-	float ww = ofGetWidth() / 2;
-	float hh = ofGetHeight() - 20;
-	slider3.setPosition(ww + pad - 70, pad, (ww / 2) - 2 * pad, hh - 2 * pad);
-	slider4.setPosition(ww + pad - 70 + (ww / 2), pad, (ww / 2) - 2 * pad, hh - 2 * pad);
+	float ww = 100;
+	float xx = ofGetWidth() - ww - pad;
+	float hh = ofGetHeight() - 100;
+	slider3.setPosition(xx, pad, ww, hh);
 
 	if (bDrawManually) slider4.drawSlider();// must draw this slider manually bc is initiated with last bool autoDraw disabled
 }
@@ -92,5 +115,29 @@ void ofApp::keyPressed(int key) {
 		slider1.setVisible(b1visible);
 	}
 	if (key == '4') bDrawManually = !bDrawManually;
+
+	if (key == OF_KEY_BACKSPACE) {//random position slider1
+		float x, y, w, h;
+		x = ofRandom(10, ofGetWidth()/4);
+		y = ofRandom(200, ofGetHeight()-500);
+		bool b = slider1.getIsVertical();
+		slider1.setVertical(!b);
+		w = (b ? 500 : 100);
+		h = (!b ? 500 : 100);
+		slider1.setPosition(x, y, w, h);
+	}
+
+	if (key == OF_KEY_RETURN) {//random position slider4
+		float x, y, w, h;
+		x = ofRandom(ofGetWidth()/2, ofGetWidth() - 500);
+		y = ofRandom(ofGetHeight()/2, ofGetHeight() - 600);
+		bool b = slider4.getIsVertical();
+		slider4.setVertical(!b);
+		w = (b ? 300 : 50);
+		h = (!b ? 300 : 50);
+		slider4.setPosition(x, y, w, h);
+		slider4.setVertical(h > w);
+		slider4.setDrawSpline(ofRandom(1)>0.5);
+	}
 }
 

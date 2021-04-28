@@ -19,10 +19,10 @@ public:
 	float value2;
 
 	ofxSimpleSlider slider3;
-	ofParameter<float> value3{ "myParam1", 2, 0, 7 };
+	ofParameter<float> value3{ "myParam3", 2, 0, 7 };
 
 	ofxSimpleSlider slider4;
-	ofParameter<float> value4{ "myParam2", 0.5, 0, 2 };
+	ofParameter<float> value4{ "myParam4", 0.5, 0, 2 };
 
 	bool b1visible = true;
 	bool bAnim = false;

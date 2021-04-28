@@ -14,6 +14,10 @@ ofxSimpleSlider::ofxSimpleSlider() {
 	bWasSetup = false;
 
 	labelString = "";
+
+	colorThumb.set(255, 255, 255);
+	colorGlobal.set(200, 200, 200);
+	colorSpine.set(255, 255, 255);
 }
 
 //----------------------------------------------------
@@ -28,7 +32,7 @@ void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, float inx, float
 	ofLogNotice(__FUNCTION__);
 
 	valueParam.makeReferenceTo(parameter);
-	setup(inx, iny, inw, inh, parameter.getMin(), parameter.getMax(), parameter.getMin(), bVert, bDrawNum, _bAutodraw);
+	setup(inx, iny, inw, inh, parameter.getMin(), parameter.getMax(), parameter.get(), bVert, bDrawNum, _bAutodraw);
 
 	// callback
 	listener = valueParam.newListener([this](float &v) {
@@ -54,7 +58,7 @@ void ofxSimpleSlider::setup(float inx, float iny, float inw, float inh, float lo
 	numberDisplayPrecision = 2;
 
 	bVertical = bVert;
-	bDrawNumber = bDrawNum;
+	bDrawNumberLabel = bDrawNum;
 	bHasFocus = false;
 
 	lowValue = loVal;
@@ -115,39 +119,49 @@ void ofxSimpleSlider::drawSlider() {
 		ofTranslate(x, y, 0);
 
 		// Use different alphas if we're actively maniupulating me.
-		float sliderAlpha = (bHasFocus) ? 128 : 64;
-		float spineAlpha = (bHasFocus) ? 192 : 128;
-		float thumbAlpha = (bHasFocus) ? 255 : 200;
+		float sliderAlpha = alphaGlobalPower * ((bHasFocus) ? 128 : 64);
+		float spineAlpha = alphaGlobalPower * ((bHasFocus) ? 192 : 128);
+		float thumbAlpha = thumbAlphaPower * ((bHasFocus) ? 255 : 200);
 
 		// draw box outline
-		ofNoFill();
-		ofSetLineWidth(1.0);
-		ofSetColor(200, 200, 200, sliderAlpha);
-		ofSetRectMode(OF_RECTMODE_CORNER);
-		ofDrawRectangle(0, 0, width, height);
+		if (alphaGlobalPower != 0) {
+			ofNoFill();
+			ofSetLineWidth(1.0);
+			ofSetColor(ofColor(colorGlobal, sliderAlpha));
+			ofSetRectMode(OF_RECTMODE_CORNER);
+			ofDrawRectangle(0, 0, width, height);
+		}
 
 		// draw spine
-		ofSetLineWidth(1.0);
-		ofSetColor(255, 255, 255, spineAlpha);
-		if (bVertical) {
-			ofDrawLine(width / 2, 0, width / 2, height);
-		}
-		else {
-			ofDrawLine(0, height / 2, width, height / 2);
-		}
-
-		// draw thumb
-		ofSetLineWidth(5.0);
-		ofSetColor(255, 255, 255, thumbAlpha);
-		if (bVertical) {
-			float thumbY = ofMap(percent, 0, 1, height, 0, true);
-			ofDrawLine(0, thumbY, width, thumbY);
-		}
-		else {
-			float thumbX = ofMap(percent, 0, 1, 0, width, true);
-			ofDrawLine(thumbX, 0, thumbX, height);
+		if (bDrawCenterLine && spineAlpha!=0) {
+			ofSetLineWidth(1.0);
+			ofSetColor(ofColor(colorSpine, spineAlpha));
+			if (bVertical) {
+				ofDrawLine(width / 2, 0, width / 2, height);
+			}
+			else {
+				ofDrawLine(0, height / 2, width, height / 2);
+			}
 		}
 
+		// draw thumb pick
+		if (thumbAlpha != 0) {
+			ofSetLineWidth(widthThumbPick);
+			ofSetColor(ofColor(colorThumb, thumbAlpha));
+			if (bVertical) {
+				float thumbY = ofMap(percent, 0, 1, height, 0, true);
+				ofDrawLine(0, thumbY, width, thumbY);
+			}
+			else {
+				float thumbX = ofMap(percent, 0, 1, 0, width, true);
+				ofDrawLine(thumbX, 0, thumbX, height);
+			}
+		}
+
+		//--
+
+		// number and name labels
+		
 		//TODO:
 		////move label up left
 		//ofTranslate(-77, -7);
@@ -174,44 +188,52 @@ void ofxSimpleSlider::drawSlider() {
 			}
 
 			// draw numeric value
-			if (bDrawNumber)
+			if (bDrawNumberLabel)
 			{
 				int _pw = 4;//TODO: get text width
 				int _ph = 15;//font height
-				int x, y;
+				int _x, _y;
 
-				if (bVertical)
+				if (bVertical)//vertical
 				{
 					if (!bLabelsAlignBottom) {//right
-						x = width + 2;
-						y = height;
+						_x = width + 2;
+						_y = height;
 
-						if (bLabel) y -= 16;
+						if (bLabel) _y -= 16;
 					}
 					else//bottom
 					{
-						x = -5;
-						y = height + _ph + 10;
+						_x = -5;
+						_y = height + _ph + 10;
 					}
 
 					//label
 					if (bLabel)
 					{
-						ofDrawBitmapString(labelString, x, y);
-						y += _ph;
+						ofDrawBitmapString(labelString, _x, _y);
+						_y += _ph;
 					}
 					//number
-					ofDrawBitmapString(ofToString(getValue(), numberDisplayPrecision), x, y);
+					ofDrawBitmapString(ofToString(getValue(), numberDisplayPrecision), _x, _y);
 				}
-				else
+				else//hoizontal
 				{
-					if (!bLabelsAlignBottom) {
-						x = width + 5;
-						y = height / 2 + 4;
+					if (!bLabelsAlignBottom) {//right
+						_x = width + 5;
+						_y = height / 2 + 4;
 					}
-
-					ofDrawBitmapString(ofToString(getValue(), numberDisplayPrecision), x, y);
-					if (bLabel) ofDrawBitmapString(labelString, width + 5, y - _ph);
+					else {//bottom
+						_x = -5;
+						_y = height + _ph + 10;
+					}
+					//label
+					if (bLabel) {
+						ofDrawBitmapString(labelString, _x, _y);
+						_y += _ph;
+					}
+					//number
+					ofDrawBitmapString(ofToString(getValue(), numberDisplayPrecision), _x, _y);
 				}
 			}
 
@@ -301,12 +323,14 @@ void ofxSimpleSlider::updatePercentFromMouse(int mx, int my) {
 		if (bVertical) {
 			percent = ofMap(my, y, y + height, 1, 0, true);
 
-			valueParam = ofMap(my, y, y + height, valueParam.getMax(), valueParam.getMin(), true);
+			if (valueParam.getName() != "-1")//ugly workaround
+				valueParam = ofMap(percent, 0, 1, valueParam.getMin(), valueParam.getMax(), true);
 		}
 		else {
 			percent = ofMap(mx, x, x + width, 0, 1, true);
 
-			valueParam = ofMap(my, x, x + width, valueParam.getMin(), valueParam.getMax(), true);
+			if (valueParam.getName() != "-1")//ugly workaround
+				valueParam = ofMap(percent, 0, 1, valueParam.getMin(), valueParam.getMax(), true);
 		}
 
 		bChanged = true;
