@@ -343,3 +343,9 @@ void ofxSimpleSlider::setVisible(bool b)
 	isEnabled = b;
 }
 
+//--------------------------------------------------------------
+void ofxSimpleSlider::setEnabled(bool b)
+{
+	isEnabled = b;
+}
+

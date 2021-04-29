@@ -77,6 +77,7 @@ public:
 	void updatePercentFromMouse(int mx, int my);
 
 	void setVisible(bool b);
+	void setEnabled(bool b);
 
 protected:
 	//ofParameter<float> valueParam = NULL;
