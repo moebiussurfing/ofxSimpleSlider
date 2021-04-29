@@ -18,6 +18,6 @@ class ofApp : public ofBaseApp{
 		
 		// parameter float type
 		ofxSimpleSlider slider2;
-		ofParameter<float> value2{ "myParam", 2.0f, 0.0f, 7.0f };
+		ofParameter<float> value2{ "myParam2", 2.0f, 0.0f, 7.0f };
 		ofEventListener listener;
 };

@@ -7,7 +7,7 @@ void ofApp::setup() {
 
 	// float type
 	slider1.setup(100, 50, w, h, 0, 1, 0.5, true, true, true);//vertical, drawNum, autodraw
-	//slider1.setLabelString("myFloat");
+	//slider1.setLabelString("myFloat1");
 	//slider1.setLabeAlignBottom(true);
 
 	// parameter float type
@@ -25,7 +25,7 @@ void ofApp::setup() {
 void ofApp::update() {
 
 	// float type
-
+	// a simple callback to know when the float var changed
 	if (slider1.isChanged())
 	{
 		value1 = slider1.getValue();
