@@ -9,10 +9,10 @@ ofxSimpleSlider
  *  Updated by moebiusSurfing 2021.
 
 ## Screenshots
-2-example-Responsive
+2-example-Responsive:  
 ![image](/docs/Capture.PNG?raw=true "image")
 
-3-example-Layout
+3-example-Layout:  
 ![image](/docs/Capture2.PNG?raw=true "image")
 
 ## Features
