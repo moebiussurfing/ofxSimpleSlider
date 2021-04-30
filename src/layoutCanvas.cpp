@@ -81,7 +81,7 @@ void LayoutCanvas::draw(ofEventArgs & args)
 		if (bDebug)
 		{
 			ofPushStyle();
-			ofSetColor(0, 255);
+			ofSetColor(0, 100);
 			ofSetLineWidth(2);
 			ofNoFill();
 			ofDrawRectangle(r1);
@@ -90,17 +90,17 @@ void LayoutCanvas::draw(ofEventArgs & args)
 			ofPopStyle();
 		}
 
-		int sz;//slider size
-		sz = 100;
+		//int _pad = 0;
+		int _pad = sizeThumb * 0.25;
 
 		//sz = ofGetWidth();
-		xSlider.setPosition(0, r1.getY() / 2, ofGetWidth(), sz);//top
-		//xSlider.setPosition(0, r1.getHeight() / 2 - sz / 2, ofGetWidth(), sz);//centered
+		xSlider.setPosition(0, r1.getY() / 2 + _pad, ofGetWidth(), sizeThumb);//top
+		//xSlider.setPosition(0, r1.getHeight() / 2 - sizeThumb / 2, ofGetWidth(), sz);//centered
 		xSlider.drawSlider();
 
 		//sz = ofGetHeight();
-		ySlider.setPosition(0, 0, sz, ofGetHeight());//left
-		//ySlider.setPosition(r3.getWidth() / 2 - sz / 2, 0, sz, ofGetHeight());//centered
+		ySlider.setPosition(_pad, 0, sizeThumb, ofGetHeight());//left
+		//ySlider.setPosition(r3.getWidth() / 2 - sz / 2, 0, sizeThumb, ofGetHeight());//centered
 		ySlider.drawSlider();
 	}
 
@@ -112,12 +112,15 @@ void LayoutCanvas::refresh() {
 	xSlider.setColorThumb(0);
 	xSlider.setColorGlobal(0);
 	xSlider.setColorSpine(0);
+	xSlider.setBlinkThumb(true);
 
 	ySlider.setColorThumb(0);
 	ySlider.setColorGlobal(0);
 	ySlider.setColorSpine(0);
+	ySlider.setBlinkThumb(true);
 
 	bool bSpline = false;
+	bool bOutline = false;
 
 	//hide
 	if (!bDebug) {
@@ -125,7 +128,7 @@ void LayoutCanvas::refresh() {
 		xSlider.setAlphaPowerGlobal(1);
 		xSlider.setWidthThumbPick(2);
 		xSlider.setDrawSpline(bSpline);
-		xSlider.setDrawOutline(false);
+		xSlider.setDrawOutline(bOutline);
 	}
 	//debug
 	else {
@@ -133,7 +136,7 @@ void LayoutCanvas::refresh() {
 		xSlider.setAlphaPowerGlobal(1);
 		xSlider.setWidthThumbPick(5);
 		xSlider.setDrawSpline(bSpline);
-		xSlider.setDrawOutline(true);
+		xSlider.setDrawOutline(bOutline);
 	}
 
 	//hide
@@ -142,7 +145,7 @@ void LayoutCanvas::refresh() {
 		ySlider.setAlphaPowerGlobal(1);
 		ySlider.setWidthThumbPick(2);
 		ySlider.setDrawSpline(bSpline);
-		ySlider.setDrawOutline(false);
+		ySlider.setDrawOutline(bOutline);
 	}
 	//debug
 	else {
@@ -150,7 +153,7 @@ void LayoutCanvas::refresh() {
 		ySlider.setAlphaPowerGlobal(1);
 		ySlider.setWidthThumbPick(5);
 		ySlider.setDrawSpline(bSpline);
-		ySlider.setDrawOutline(true);
+		ySlider.setDrawOutline(bOutline);
 	}
 }
 

@@ -20,6 +20,14 @@ public:
 		return params;
 	}
 
+	void setSizeThumb(int _sizeThumb) {
+		sizeThumb = _sizeThumb;
+		//xSlider.sizeThumb = _sizeThumb;
+		//ySlider.sizeThumb = _sizeThumb;
+	}
+
+protected:
+	int sizeThumb = 100;//slider size
 
 public:
 	ofParameter<float> xValue{ "x", 0.5, 0, 1 };
@@ -55,6 +63,10 @@ public:
 	void setHandleSettings(bool b) {
 		bHandleSettings = b;
 	}
+	void setVisibleGui(bool b) {
+		bGui = b;
+	}
+
 private:
 	bool bHandleSettings = true;
 	string path_Settings = "LayoutCanvas.json";

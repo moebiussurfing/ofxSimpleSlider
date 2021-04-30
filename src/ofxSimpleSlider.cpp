@@ -13,6 +13,7 @@ ofxSimpleSlider::ofxSimpleSlider() {
 
 	bWasSetup = false;
 	bVisible = true;
+	bBlinkThumb = false;
 
 	labelString = "";
 
@@ -155,14 +156,18 @@ void ofxSimpleSlider::drawSlider() {
 		// draw thumb pick
 		if (thumbAlpha != 0) {
 			ofSetLineWidth(widthThumbPick);
-			ofSetColor(ofColor(colorThumb, thumbAlpha));
+			int a = thumbAlpha;
+			if (bBlinkThumb) a = ofMap(Bounce(1), 0, 1, 0.7, thumbAlpha);
+			ofSetColor(ofColor(colorThumb, a));
 			if (bVertical) {
 				float thumbY = ofMap(percent, 0, 1, height, 0, true);
+				//ofDrawLine(0, thumbY, width*sizeThumb, thumbY);
 				ofDrawLine(0, thumbY, width, thumbY);
 			}
 			else {
 				float thumbX = ofMap(percent, 0, 1, 0, width, true);
 				ofDrawLine(thumbX, 0, thumbX, height);
+				//ofDrawLine(thumbX, 0, thumbX, height*sizeThumb);
 			}
 		}
 

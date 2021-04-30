@@ -128,10 +128,27 @@ public:
 		bDrawNumberLabel = b;
 	}
 
-	//-
+	//----------------------------------------------------
+	void setBlinkThumb(bool b) {
+		bBlinkThumb = b;
+	}
+
+protected:
+	/* Return a linear value in range [0,1] every delay (in seconds). */
+	float Tick(float delay) {
+		return fmodf(ofGetElapsedTimeMillis() / 1000.0f, delay) / delay;
+	}
+	/* Return a linear value in range [0,1] every delay (in seconds),
+	 with value equal 0 at boundaries, and 1 at delay / 2. */
+	float Bounce(float delay) {
+		return 0.5f*(1.0 + glm::sin(Tick(delay) * glm::two_pi<float>()));
+	}
+
+	//--
 
 	// decoration
 
+public:
 	//----------------------------------------------------
 	void setWidthThumbPick(float v) {
 		widthThumbPick = v;
@@ -175,6 +192,7 @@ protected:
 	bool bDrawNumberLabel;
 	bool bHasFocus;
 	bool bVisible;
+	bool bBlinkThumb;
 
 	float lowValue;
 	float highValue;
@@ -189,6 +207,9 @@ protected:
 
 	float alphaPowerThumb = 1.0;
 	float alphaPowerGlobal = 1.0;
+
+//public:
+//	float sizeThumb = 1.0;
 
 protected:
 	bool bWasSetup;
