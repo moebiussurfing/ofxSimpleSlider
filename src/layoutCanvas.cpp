@@ -29,17 +29,18 @@ void LayoutCanvas::setup() {
 	params.add(bVisible);
 	params.add(bEdit);
 	params.add(bReset);
+	params.add(bGui);
 
 	ofAddListener(params.parameterChangedE(), this, &LayoutCanvas::Changed);
 
-	xSlider.setupParam(xValue, -1, -1, -1, -1, false, false, false);//horizontal
-	ySlider.setupParam(yValue, -1, -1, -1, -1, true, false, false);//vertical
+	xSlider.setupParam(xValue, false, false, false);//horizontal
+	ySlider.setupParam(yValue, true, false, false);//vertical
 
 	gui.setup(params);
-	gui.setPosition(100, 100);
+	gui.setPosition(150, 150);
 
 	ofJson settings;
-	settings = ofLoadJson("Settings.json");
+	settings = ofLoadJson(path_Settings);
 	ofDeserialize(settings, params);
 
 	refresh();
@@ -72,34 +73,24 @@ void LayoutCanvas::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void LayoutCanvas::draw(ofEventArgs & args)
 {
-	ofPushStyle();
+	if (bVisible)
 	{
-		//filled
-		ofFill();
-		int alpha = 255;
-		ofSetColor(ofColor::red, alpha);
-		ofDrawRectangle(r1);
-		ofSetColor(ofColor::green, alpha);
-		ofDrawRectangle(r2);
-		ofSetColor(ofColor::blue, alpha);
-		ofDrawRectangle(r3);
-
 		//border
-		if (bDebug) {
+		if (bDebug)
+		{
+			ofPushStyle();
 			ofSetColor(0, 255);
 			ofSetLineWidth(2);
 			ofNoFill();
 			ofDrawRectangle(r1);
 			ofDrawRectangle(r2);
 			ofDrawRectangle(r3);
+			ofPopStyle();
 		}
-	}
-	ofPopStyle();
 
-	if (bVisible) {
 		int sz;//slider size
 		sz = 100;
-		
+
 		//sz = ofGetWidth();
 		xSlider.setPosition(0, r1.getY() / 2, ofGetWidth(), sz);//top
 		//xSlider.setPosition(0, r1.getHeight() / 2 - sz / 2, ofGetWidth(), sz);//centered
@@ -110,44 +101,54 @@ void LayoutCanvas::draw(ofEventArgs & args)
 		//ySlider.setPosition(r3.getWidth() / 2 - sz / 2, 0, sz, ofGetHeight());//centered
 		ySlider.drawSlider();
 	}
-	gui.draw();
+
+	if (bGui) gui.draw();
 }
 
 //--------------------------------------------------------------
 void LayoutCanvas::refresh() {
+	xSlider.setColorThumb(0);
+	xSlider.setColorGlobal(0);
+	xSlider.setColorSpine(0);
+
+	ySlider.setColorThumb(0);
+	ySlider.setColorGlobal(0);
+	ySlider.setColorSpine(0);
+
+	bool bSpline = false;
 
 	//hide
 	if (!bDebug) {
-		xSlider.setAlphaThumbPower(0);
-		xSlider.setAlphaGlobalPower(0);
-		xSlider.setWidthThumbPick(1);
+		xSlider.setAlphaPowerThumb(1);
+		xSlider.setAlphaPowerGlobal(1);
+		xSlider.setWidthThumbPick(2);
+		xSlider.setDrawSpline(bSpline);
+		xSlider.setDrawOutline(false);
 	}
 	//debug
 	else {
-		xSlider.setAlphaThumbPower(1);
-		xSlider.setAlphaGlobalPower(1);
+		xSlider.setAlphaPowerThumb(1);
+		xSlider.setAlphaPowerGlobal(1);
 		xSlider.setWidthThumbPick(5);
-		xSlider.setDrawSpline(true);
-		xSlider.setColorThumb(0);
-		xSlider.setColorGlobal(0);
-		xSlider.setColorSpine(0);
+		xSlider.setDrawSpline(bSpline);
+		xSlider.setDrawOutline(true);
 	}
 
 	//hide
 	if (!bDebug) {
-		ySlider.setAlphaThumbPower(0);
-		ySlider.setAlphaGlobalPower(0);
-		ySlider.setWidthThumbPick(1);
+		ySlider.setAlphaPowerThumb(1);
+		ySlider.setAlphaPowerGlobal(1);
+		ySlider.setWidthThumbPick(2);
+		ySlider.setDrawSpline(bSpline);
+		ySlider.setDrawOutline(false);
 	}
 	//debug
 	else {
-		ySlider.setAlphaThumbPower(1);
-		ySlider.setAlphaGlobalPower(1);
+		ySlider.setAlphaPowerThumb(1);
+		ySlider.setAlphaPowerGlobal(1);
 		ySlider.setWidthThumbPick(5);
-		ySlider.setDrawSpline(true);
-		ySlider.setColorThumb(0);
-		ySlider.setColorGlobal(0);
-		ySlider.setColorSpine(0);
+		ySlider.setDrawSpline(bSpline);
+		ySlider.setDrawOutline(true);
 	}
 }
 
@@ -155,18 +156,8 @@ void LayoutCanvas::refresh() {
 void LayoutCanvas::exit() {
 	ofJson settings;
 	ofSerialize(settings, params);
-	bool b = ofSavePrettyJson("Settings.json", settings);
+	bool b = ofSavePrettyJson(path_Settings, settings);
 }
-
-////--------------------------------------------------------------
-//void LayoutCanvas::setBool(bool b){
-//		ofLogNotice(__FUNCTION__) << ofToString(b);
-//}
-//
-////--------------------------------------------------------------
-//bool LayoutCanvas::getBool(){
-//	return true;
-//}
 
 //--------------------------------------------------------------
 void LayoutCanvas::Changed(ofAbstractParameter &e)
@@ -192,7 +183,7 @@ void LayoutCanvas::Changed(ofAbstractParameter &e)
 	{
 		xSlider.setEnabled(bEdit);
 		ySlider.setEnabled(bEdit);
-		
+
 		//refresh();
 	}
 
@@ -203,6 +194,8 @@ void LayoutCanvas::Changed(ofAbstractParameter &e)
 	else if (name == bDebug.getName())
 	{
 		refresh();
+
+		ofSetLogLevel("LayoutCanvas", bDebug ? OF_LOG_NOTICE : OF_LOG_SILENT);
 	}
 	else if (name == bReset.getName() && bReset)
 	{
@@ -228,3 +221,13 @@ void LayoutCanvas::keyPressed(ofKeyEventArgs &eventArgs)
 
 	//--
 }
+
+////--------------------------------------------------------------
+//void LayoutCanvas::setBool(bool b){
+//		ofLogNotice(__FUNCTION__) << ofToString(b);
+//}
+//
+////--------------------------------------------------------------
+//bool LayoutCanvas::getBool(){
+//	return true;
+//}

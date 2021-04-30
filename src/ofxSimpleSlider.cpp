@@ -12,6 +12,7 @@ ofxSimpleSlider::ofxSimpleSlider() {
 	ofLogNotice(__FUNCTION__);
 
 	bWasSetup = false;
+	bVisible = true;
 
 	labelString = "";
 
@@ -28,6 +29,13 @@ ofxSimpleSlider::~ofxSimpleSlider() {
 }
 
 //-----------------------------------------------------------------------------------------------------------------------
+void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, bool bVert, bool bDrawNum, bool _bAutodraw)
+{
+	ofLogNotice(__FUNCTION__);
+	setupParam(parameter, -1, -1, -1, -1, bVert, bDrawNum, _bAutodraw);
+}
+
+//-----------------------------------------------------------------------------------------------------------------------
 void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw) {
 	ofLogNotice(__FUNCTION__);
 
@@ -36,9 +44,8 @@ void ofxSimpleSlider::setupParam(ofParameter<float>& parameter, float inx, float
 
 	// callback
 	listener = valueParam.newListener([this](float &v) {
-		ofLogNotice("ofxSimpleSlider::Changed") /*<< valueParam.getName() << ":"*/ << v;
-		float _prc = ofMap(v, lowValue, highValue, 0, 1, true);
-		setPercent(_prc);
+		//ofLogNotice("ofxSimpleSlider::Changed") /*<< valueParam.getName() << ":"*/ << v;
+		setPercent(ofMap(v, lowValue, highValue, 0, 1, true));
 	});
 }
 
@@ -111,21 +118,22 @@ void ofxSimpleSlider::draw(ofEventArgs& event) {
 //----------------------------------------------------
 void ofxSimpleSlider::drawSlider() {
 
-	if (isEnabled) {
-
+	if (isEnabled && bVisible)
+	{
 		ofPushStyle();
 
 		ofPushMatrix();
 		ofTranslate(x, y, 0);
 
 		// Use different alphas if we're actively maniupulating me.
-		float sliderAlpha = alphaGlobalPower * ((bHasFocus) ? 128 : 64);
-		float spineAlpha = alphaGlobalPower * ((bHasFocus) ? 192 : 128);
-		float thumbAlpha = thumbAlphaPower * ((bHasFocus) ? 255 : 200);
+		int sliderAlpha = alphaPowerGlobal * ((bHasFocus) ? 128 : 64);
+		int spineAlpha = alphaPowerGlobal * ((bHasFocus) ? 192 : 128);
+		int thumbAlpha = alphaPowerThumb * ((bHasFocus) ? 255 : 200);
+
+		ofNoFill();
 
 		// draw box outline
-		if (alphaGlobalPower != 0) {
-			ofNoFill();
+		if (alphaPowerGlobal != 0 && bDrawOutline) {
 			ofSetLineWidth(1.0);
 			ofSetColor(ofColor(colorGlobal, sliderAlpha));
 			ofSetRectMode(OF_RECTMODE_CORNER);
@@ -133,7 +141,7 @@ void ofxSimpleSlider::drawSlider() {
 		}
 
 		// draw spine
-		if (bDrawCenterLine && spineAlpha!=0) {
+		if (bDrawSpline && spineAlpha != 0) {
 			ofSetLineWidth(1.0);
 			ofSetColor(ofColor(colorSpine, spineAlpha));
 			if (bVertical) {
@@ -161,35 +169,34 @@ void ofxSimpleSlider::drawSlider() {
 		//--
 
 		// number and name labels
-		
-		//TODO:
-		////move label up left
-		//ofTranslate(-77, -7);
-		////move label down left
-		//ofTranslate(-32, 33);
-		////move label down left
-		//ofTranslate(-30, 20);
-		ofTranslate(10, -7);
 
-		for (int i = 0; i < 2; i++) {
-			if (bHasFocus) {
-				if (i == 0) ofSetColor(0, 255);
-				else if (i == 1) {
-					ofSetColor(255, 255);
-					ofTranslate(-1, -1);
-				}
-			}
-			else {
-				if (i == 0) ofSetColor(0, 200);
-				else if (i == 1) {
-					ofSetColor(255, 200);
-					ofTranslate(-1, -1);
-				}
-			}
+		// draw numeric value
+		if (bDrawNumberLabel)
+		{
+			ofTranslate(10, -7);
+			//TODO:
+			////move label up left
+			//ofTranslate(-77, -7);
+			////move label down left
+			//ofTranslate(-32, 33);
+			////move label down left
+			//ofTranslate(-30, 20);
 
-			// draw numeric value
-			if (bDrawNumberLabel)
-			{
+			for (int i = 0; i < 2; i++) {//double pass for shadow too
+				if (bHasFocus) {
+					if (i == 0) ofSetColor(0, 255);
+					else if (i == 1) {
+						ofSetColor(255, 255);
+						ofTranslate(-1, -1);
+					}
+				}
+				else {
+					if (i == 0) ofSetColor(0, 200);
+					else if (i == 1) {
+						ofSetColor(255, 200);
+						ofTranslate(-1, -1);
+					}
+				}
 				int _pw = 4;//TODO: get text width
 				int _ph = 15;//font height
 				int _x, _y;
@@ -340,7 +347,8 @@ void ofxSimpleSlider::updatePercentFromMouse(int mx, int my) {
 //--------------------------------------------------------------
 void ofxSimpleSlider::setVisible(bool b)
 {
-	isEnabled = b;
+	bVisible = b;
+	//isEnabled = b;
 }
 
 //--------------------------------------------------------------

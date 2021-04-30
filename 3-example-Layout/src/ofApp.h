@@ -15,4 +15,6 @@ class ofApp : public ofBaseApp{
 		void keyPressed(int key);
 		
 		LayoutCanvas canvas;
+
+		bool bGui = false;
 };

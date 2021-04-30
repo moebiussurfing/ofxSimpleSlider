@@ -9,16 +9,17 @@ class LayoutCanvas
 {
 
 protected:
-
-	ofParameterGroup params{ "layoutCanvas" };
+	ofParameterGroup params{ "LayoutCanvas" };
 	void Changed(ofAbstractParameter &e);
 
 	ofxSimpleSlider xSlider;
-	ofParameter<float> xValue{ "x", 0.5, 0, 1 };
-
 	ofxSimpleSlider ySlider;
+
+public:
+	ofParameter<float> xValue{ "x", 0.5, 0, 1 };
 	ofParameter<float> yValue{ "y", 0.5, 0, 1 };
 
+public:
 	ofRectangle r1, r2, r3;
 
 public:
@@ -29,20 +30,23 @@ public:
 	void setup();
 	void exit();
 
+protected:
 	void refresh();
-
 	void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
 	void keyPressed(ofKeyEventArgs &eventArgs);
 
-protected:
-
+//protected:
+public:
 	ofParameter<bool> bReset{ "Reset", false };
 	ofParameter<bool> bDebug{ "Debug", true };
 	ofParameter<bool> bVisible{ "Visible", true};
+	ofParameter<bool> bGui{ "Gui", true};
 	ofParameter<bool> bEdit{ "Edit", true };
+	//ofParameter<bool> bSpin{ "Spin", true };
 
 private:
+	string path_Settings = "LayoutCanvas.json";
 	ofxPanel gui;
 
 };

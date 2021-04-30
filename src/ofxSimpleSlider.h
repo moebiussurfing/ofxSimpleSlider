@@ -28,6 +28,7 @@ public:
 
 	// ofParameter<float> type
 	void setupParam(ofParameter<float>& parameter, float inx, float iny, float inw, float inh, bool bVert, bool bDrawNum, bool _bAutodraw);
+	void setupParam(ofParameter<float>& parameter, bool bVert, bool bDrawNum, bool _bAutodraw);
 
 	// float type
 	void setup(float inx, float iny, float inw, float inh, float loVal, float hiVal, float initialPercent, bool bVert, bool bDrawNum, bool _bAutodraw);
@@ -88,12 +89,17 @@ protected:
 	bool isEnabled = true;
 	bool bAutodraw = true;
 	bool bLabelsAlignBottom = false;
-	bool bDrawCenterLine = true;
+	bool bDrawSpline = true;
+	bool bDrawOutline = true;
 
 public:
 	//----------------------------------------------------
 	void setDrawSpline(bool b) {
-		bDrawCenterLine = b;
+		bDrawSpline = b;
+	}
+	//----------------------------------------------------
+	void setDrawOutline(bool b) {
+		bDrawOutline = b;
 	}
 
 	//----------------------------------------------------
@@ -145,12 +151,12 @@ public:
 	}
 
 	//----------------------------------------------------
-	void setAlphaThumbPower(float v) {
-		thumbAlphaPower = v;
+	void setAlphaPowerThumb(float v) {
+		alphaPowerThumb = v;
 	}
 	//----------------------------------------------------
-	void setAlphaGlobalPower(float v) {
-		alphaGlobalPower = v;
+	void setAlphaPowerGlobal(float v) {
+		alphaPowerGlobal = v;
 	}
 
 
@@ -168,6 +174,7 @@ protected:
 	bool bVertical;
 	bool bDrawNumberLabel;
 	bool bHasFocus;
+	bool bVisible;
 
 	float lowValue;
 	float highValue;
@@ -180,8 +187,8 @@ protected:
 	ofColor colorGlobal;
 	ofColor colorSpine;
 
-	float thumbAlphaPower = 1.0;
-	float alphaGlobalPower = 1.0;
+	float alphaPowerThumb = 1.0;
+	float alphaPowerGlobal = 1.0;
 
 protected:
 	bool bWasSetup;
