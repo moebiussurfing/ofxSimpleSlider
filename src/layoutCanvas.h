@@ -16,6 +16,12 @@ protected:
 	ofxSimpleSlider ySlider;
 
 public:
+	ofParameterGroup getParameters() {
+		return params;
+	}
+
+
+public:
 	ofParameter<float> xValue{ "x", 0.5, 0, 1 };
 	ofParameter<float> yValue{ "y", 0.5, 0, 1 };
 
@@ -36,16 +42,21 @@ protected:
 	void draw(ofEventArgs & args);
 	void keyPressed(ofKeyEventArgs &eventArgs);
 
-//protected:
+	//protected:
 public:
 	ofParameter<bool> bReset{ "Reset", false };
 	ofParameter<bool> bDebug{ "Debug", true };
-	ofParameter<bool> bVisible{ "Visible", true};
-	ofParameter<bool> bGui{ "Gui", true};
+	ofParameter<bool> bVisible{ "Visible", true };
+	ofParameter<bool> bGui{ "Gui", true };
 	ofParameter<bool> bEdit{ "Edit", true };
 	//ofParameter<bool> bSpin{ "Spin", true };
 
+public:
+	void setHandleSettings(bool b) {
+		bHandleSettings = b;
+	}
 private:
+	bool bHandleSettings = true;
 	string path_Settings = "LayoutCanvas.json";
 	ofxPanel gui;
 

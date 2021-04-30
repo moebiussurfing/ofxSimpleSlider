@@ -39,9 +39,11 @@ void LayoutCanvas::setup() {
 	gui.setup(params);
 	gui.setPosition(150, 150);
 
-	ofJson settings;
-	settings = ofLoadJson(path_Settings);
-	ofDeserialize(settings, params);
+	if (bHandleSettings) {
+		ofJson settings;
+		settings = ofLoadJson(path_Settings);
+		ofDeserialize(settings, params);
+	}
 
 	refresh();
 }
@@ -154,9 +156,11 @@ void LayoutCanvas::refresh() {
 
 //--------------------------------------------------------------
 void LayoutCanvas::exit() {
-	ofJson settings;
-	ofSerialize(settings, params);
-	bool b = ofSavePrettyJson(path_Settings, settings);
+	if (bHandleSettings) {
+		ofJson settings;
+		ofSerialize(settings, params);
+		bool b = ofSavePrettyJson(path_Settings, settings);
+	}
 }
 
 //--------------------------------------------------------------
