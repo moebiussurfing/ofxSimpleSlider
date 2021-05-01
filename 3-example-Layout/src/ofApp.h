@@ -5,7 +5,6 @@
 #include "ofxSimpleSlider.h"
 #include "LayoutCanvas.h"
 
-
 class ofApp : public ofBaseApp{
 
 	public:

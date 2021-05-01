@@ -78,6 +78,7 @@ public:
 	void updatePercentFromMouse(int mx, int my);
 
 	void setVisible(bool b);
+	void setVisibleOnlyIfHover(bool b);
 	void setEnabled(bool b);
 
 protected:
@@ -192,6 +193,7 @@ protected:
 	bool bDrawNumberLabel;
 	bool bHasFocus;
 	bool bVisible;
+	bool bVisibleOnlyIfHover;
 	bool bBlinkThumb;
 
 	float lowValue;

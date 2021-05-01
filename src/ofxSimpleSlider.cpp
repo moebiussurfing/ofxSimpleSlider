@@ -119,6 +119,15 @@ void ofxSimpleSlider::draw(ofEventArgs& event) {
 //----------------------------------------------------
 void ofxSimpleSlider::drawSlider() {
 
+	// dont draw if mouse it's outside
+	if (bVisibleOnlyIfHover)
+	{
+		ofSetRectMode(OF_RECTMODE_CORNER);
+		ofRectangle r(x, y, width, height);
+		if(!r.inside(glm::vec2(ofGetMouseX(), ofGetMouseY()))) return;
+	}
+
+
 	if (isEnabled && bVisible)
 	{
 		ofPushStyle();
@@ -354,6 +363,13 @@ void ofxSimpleSlider::setVisible(bool b)
 {
 	bVisible = b;
 	//isEnabled = b;
+}
+
+
+//--------------------------------------------------------------
+void ofxSimpleSlider::setVisibleOnlyIfHover(bool b)
+{
+	bVisibleOnlyIfHover = b;
 }
 
 //--------------------------------------------------------------

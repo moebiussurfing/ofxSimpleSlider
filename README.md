@@ -22,5 +22,9 @@ ofxSimpleSlider
 - Autodraw or not.
 - Added layoutCanvas.h class to handle dual slider basic layout helper.
 
+## Dependencies
+* ofxGui  [ **OF** ]  
+For the _layoutCanvas.cpp_ class only. You can remove from your project if you don't want to use.
+
 ## Usage
-Look example.
+Look the examples.

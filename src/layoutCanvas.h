@@ -7,6 +7,29 @@
 
 class LayoutCanvas
 {
+public:
+
+	void setVisible(bool b) {
+		xSlider.setVisible(b);
+		ySlider.setVisible(b);
+	}
+	void setVisibleX(bool b) {
+		xSlider.setVisible(b);
+	}
+	void setVisibleY(bool b) {
+		ySlider.setVisible(b);
+	}
+
+	void setVisibleOnlyIfHover(bool b) {
+		xSlider.setVisibleOnlyIfHover(b);
+		ySlider.setVisibleOnlyIfHover(b);
+	}
+	void setVisibleOnlyIfHoverX(bool b) {
+		xSlider.setVisibleOnlyIfHover(b);
+	}
+	void setVisibleOnlyIfHoverY(bool b) {
+		ySlider.setVisibleOnlyIfHover(b);
+	}
 
 protected:
 	ofParameterGroup params{ "LayoutCanvas" };
@@ -50,10 +73,12 @@ protected:
 	void draw(ofEventArgs & args);
 	void keyPressed(ofKeyEventArgs &eventArgs);
 
+	bool bSetupDone = false;
+
 	//protected:
 public:
 	ofParameter<bool> bReset{ "Reset", false };
-	ofParameter<bool> bDebug{ "Debug", true };
+	ofParameter<bool> bDebug{ "Debug", false };
 	ofParameter<bool> bVisible{ "Visible", true };
 	ofParameter<bool> bGui{ "Gui", true };
 	ofParameter<bool> bEdit{ "Edit", true };

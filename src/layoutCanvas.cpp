@@ -38,19 +38,24 @@ void LayoutCanvas::setup() {
 
 	gui.setup(params);
 	gui.setPosition(150, 150);
-
-	if (bHandleSettings) {
-		ofJson settings;
-		settings = ofLoadJson(path_Settings);
-		ofDeserialize(settings, params);
-	}
-
-	refresh();
 }
 
 //--------------------------------------------------------------
 void LayoutCanvas::update(ofEventArgs & args)
 {
+	if (!bSetupDone) 
+	{
+		if (bHandleSettings) {
+			ofJson settings;
+			settings = ofLoadJson(path_Settings);
+			ofDeserialize(settings, params);
+		}
+		refresh();
+
+		bSetupDone = true;//run only once bc setup is autocalled on constructor
+		//but we want to check bHandleSettings before load settings
+	}
+
 	int x, y, w, h;
 
 	x = 0;
