@@ -124,7 +124,7 @@ void LayoutCanvas::refresh() {
 	ySlider.setColorSpine(0);
 	ySlider.setBlinkThumb(true);
 
-	bool bSpline = false;
+	bool bSpline = bVisibleSpline;
 	bool bOutline = false;
 
 	//hide

@@ -137,8 +137,11 @@ void ofxSimpleSlider::drawSlider() {
 
 		// Use different alphas if we're actively maniupulating me.
 		int sliderAlpha = alphaPowerGlobal * ((bHasFocus) ? 128 : 64);
-		int spineAlpha = alphaPowerGlobal * ((bHasFocus) ? 192 : 128);
+		int spineAlpha = alphaPowerGlobal * ((bHasFocus) ? 96 : 32);
+		//int spineAlpha = alphaPowerGlobal * ((bHasFocus) ? 192 : 128);
 		int thumbAlpha = alphaPowerThumb * ((bHasFocus) ? 255 : 200);
+
+		float v = Bounce(1);
 
 		ofNoFill();
 
@@ -152,8 +155,10 @@ void ofxSimpleSlider::drawSlider() {
 
 		// draw spine
 		if (bDrawSpline && spineAlpha != 0) {
+			int a = spineAlpha;
+			if (bBlinkThumb) a = ofMap(v, 0, 1, 0.7, spineAlpha);
 			ofSetLineWidth(1.0);
-			ofSetColor(ofColor(colorSpine, spineAlpha));
+			ofSetColor(ofColor(colorSpine, a));
 			if (bVertical) {
 				ofDrawLine(width / 2, 0, width / 2, height);
 			}
@@ -164,9 +169,9 @@ void ofxSimpleSlider::drawSlider() {
 
 		// draw thumb pick
 		if (thumbAlpha != 0) {
-			ofSetLineWidth(widthThumbPick);
 			int a = thumbAlpha;
-			if (bBlinkThumb) a = ofMap(Bounce(1), 0, 1, 0.7, thumbAlpha);
+			if (bBlinkThumb) a = ofMap(v, 0, 1, 0.7, thumbAlpha); 
+			ofSetLineWidth(widthThumbPick);
 			ofSetColor(ofColor(colorThumb, a));
 			if (bVertical) {
 				float thumbY = ofMap(percent, 0, 1, height, 0, true);

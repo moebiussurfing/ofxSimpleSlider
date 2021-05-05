@@ -80,6 +80,7 @@ public:
 	ofParameter<bool> bReset{ "Reset", false };
 	ofParameter<bool> bDebug{ "Debug", false };
 	ofParameter<bool> bVisible{ "Visible", true };
+	ofParameter<bool> bVisibleSpline{ "Visible Spin", false};
 	ofParameter<bool> bGui{ "Gui", true };
 	ofParameter<bool> bEdit{ "Edit", true };
 	//ofParameter<bool> bSpin{ "Spin", true };
@@ -90,6 +91,12 @@ public:
 	}
 	void setVisibleGui(bool b) {
 		bGui = b;
+	}
+	void setVisibleSpline(bool b) {
+		bVisibleSpline = b;
+		
+		xSlider.setDrawSpline(b);
+		ySlider.setDrawSpline(b);
 	}
 
 private:
