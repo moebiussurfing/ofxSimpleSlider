@@ -39,7 +39,13 @@ protected:
 	ofxSimpleSlider ySlider;
 
 public:
-	ofParameterGroup getParameters() {
+	void setEnabled(bool b) {
+		xSlider.setEnabled(b);
+		ySlider.setEnabled(b);
+	}
+
+public:
+	ofParameterGroup& getParameters() {
 		return params;
 	}
 
@@ -53,8 +59,8 @@ protected:
 	int sizeThumb = 100;//slider size
 
 public:
-	ofParameter<float> xValue{ "x", 0.5, 0, 1 };
-	ofParameter<float> yValue{ "y", 0.5, 0, 1 };
+	ofParameter<float> xValue{ "x div", 0.5, 0, 1 };
+	ofParameter<float> yValue{ "y div", 0.5, 0, 1 };
 
 public:
 	ofRectangle r1, r2, r3;

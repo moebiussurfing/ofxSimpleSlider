@@ -27,4 +27,7 @@ public:
 	bool b1visible = true;
 	bool bAnim = false;
 	bool bDrawManually = true;
+
+	float w = 200;
+	float h = 50;
 };

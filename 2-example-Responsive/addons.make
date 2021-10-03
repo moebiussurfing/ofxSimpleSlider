@@ -1,2 +1,2 @@
-ofxSimpleSlider
 ofxGui
+ofxSimpleSlider
